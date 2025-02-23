@@ -1,0 +1,133 @@
+body{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: "Poppins", serif;
+}
+
+.header{
+    font-size: 30px;
+    font-weight: bold;
+    margin-bottom: 20px;
+    margin-left: 25px;
+}
+
+input{
+    min-width: 400px;
+    padding: 10px;
+    font-size: 16px;
+    margin-left: 25px;
+}
+
+table, tr, th, td{
+    border: 1px solid black;
+    border-collapse: collapse;
+    padding: 20px;
+}
+
+tbody>tr>td{
+    text-align: center;
+}
+
+th{
+    width: 130px;
+}
+.data{
+    position: relative;
+    left: 20px;
+    right: 30px;
+    top: 50px;
+}
+
+.js-showbtn{
+    background-color: rgb(25, 146, 194);
+    color: rgb(250, 248, 248);
+    font-size: 16px;
+    font-weight: bold;
+    padding: 5px;
+    border: none;
+    border-radius: 5px;
+    width: 100px;
+    cursor: pointer;
+}
+
+.js-showbtn:hover{
+    background-color: rgb(94, 156, 180);
+    color: black;
+}
+
+img{
+    width: 100px;
+}
+
+tbody>tr:nth-child(even){
+    background-color: rgb(223, 223, 230);
+}
+
+tbody>tr:nth-child(even):hover{
+    background-color: rgb(125, 87, 87);
+    color: white;
+}
+
+tbody>tr:nth-child(odd):hover{
+    background-color: rgb(255, 233, 233)
+}
+
+#popup{
+    width: 900px;
+    height: 450px;
+    background-color: white;
+    position: fixed;
+    top: 0px;
+    left: 0px;
+    transform : translate(35%, 20%);
+    z-index: 1;
+    display: none;
+    font-size: 20px;
+}
+
+#opacity
+{
+    width: 1500px;
+    height: 1000px;
+    background-color: black;
+    position: fixed;
+    top: 0px;
+    left: 0px;
+    opacity: 0.5;
+    display: none;
+}
+
+#close{
+    position: absolute;
+    right: 30px;
+    top: 20px;
+    border: none;
+    background-color: white;
+    cursor: pointer;
+    font-size: 40px;
+}
+
+.countryName{
+    padding-left: 20px;
+}
+
+.popDetails{
+    position: absolute;
+    left: 30%;
+    text-align: center;
+}
+
+.popupImg{
+    width: 150px;
+}
+
+/* .search{
+    background-color: rgb(78, 78, 243);
+    color: white;
+    font-size: 20px;
+    border: none;
+    border-radius: 10px;
+    padding: 10px;
+    cursor: pointer;
+} */
