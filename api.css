@@ -34,8 +34,8 @@ th{
 }
 .data{
     position: relative;
-    left: 20px;
-    right: 30px;
+    left: 30px;
+    right: 40px;
     top: 50px;
 }
 
@@ -75,12 +75,12 @@ tbody>tr:nth-child(odd):hover{
 
 #popup{
     width: 900px;
-    height: 450px;
+    height: 480px;
     background-color: white;
     position: fixed;
     top: 0px;
     left: 0px;
-    transform : translate(35%, 20%);
+    transform : translate(35%, 35%);
     z-index: 1;
     display: none;
     font-size: 20px;
@@ -113,13 +113,25 @@ tbody>tr:nth-child(odd):hover{
 }
 
 .popDetails{
-    position: absolute;
-    left: 30%;
-    text-align: center;
+   display: flex;
+   flex-direction: column;
+   justify-content: center;
+   align-items: center;
+   text-align: center;
 }
 
+
+ul{
+    list-style : none;
+    margin: 10px;
+}
+
+ul>li{
+    padding-bottom: 15px ;
+}
 .popupImg{
     width: 150px;
+    
 }
 
 /* .search{

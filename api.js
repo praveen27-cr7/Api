@@ -46,7 +46,7 @@ async function displayCountries() {
                 <td>${currencyName} (${currencySymbol})</td>
                 <td><img src= ${country.flags.png}></td>
                 <td><button id = "showBtn" class="js-showbtn" 
-                ">Show Details</button></td>
+                  onclick = "showDetails('${country.name.common}')">Show Details</button></td>
             </tr>`
             countriesTable.innerHTML = createRow
 
@@ -59,12 +59,6 @@ async function displayCountries() {
 
    //////////////
     
-
-     
-     //   btn.addEventListener('click', () => {
-        
-        //       popup.style.display = 'block'
-        //    })
         
 /////Show Popup on UI
 
@@ -81,63 +75,11 @@ async function displayCountries() {
         
 //////////////
 
-///////When click the show button you will see the country data in Popup
-            let createPopupDetails = ''
-        
-       countries.forEach((country) => {
-            
-            let millionVal = (country.population/100000).toFixed(2)
 
-                const currencies = country.currencies;
-                let languages = country.languages
-              
-
-                if (currencies) {
-                    // Get the first currency (most countries have one primary currency)
-                    const currencyName = Object.values(currencies)[0].name || 'N/A';
-                    const currencySymbol = Object.values(currencies)[0].symbol || 'N/A';
-                    
-                    const langaugeName = Object.values(languages).toString().split(',').join(',')
-                    
-                    createPopupDetails = `<p class = "countryName">${country.name.common}</p>
-                    
-                    <div class= "popDetails">
-                    <img src= ${country.flags.png} class = "popupImg">
-                    <p>Capital: ${country.capital}</p>
-                    <p>Population: ${millionVal}M</p>
-                    <p>Region: ${country.region}</p>
-                    <p>Languages: ${langaugeName}</p>
-                    <p>Currency : ${currencyName} (${currencySymbol})</p>
-                    </div>
-                    <button id="close" >&#10006</button>
-                    `
-                    
-                    
-                    popup.innerHTML = createPopupDetails
-
-                    
-                } })
-
-               
-                
-     //////////////
-     
-     //////Close the popup
-                
-              
-                let closeBtn = document.getElementById('close')
-                
-            
-                 closeBtn.addEventListener('click', () => {
-                   
-                   popup.style.display = "none"
-                   opacity.style.display = 'none'
-                })
-                
-        }
+ }
         
            
-                
+    
       ///////////          
                 
             
@@ -145,8 +87,88 @@ async function displayCountries() {
             
         displayCountries()
 
+        ////////////When click the show button you will see the country data in Popup
 
-        ///////
+
+ async function showDetails(countryName) {
+            try{
+                let response =  await fetch(`https://restcountries.com/v3.1/name/${countryName}?fullText=true`)
+                let countryData = await response.json()
+
+                console.log("Full API Response:", countryData);
+
+                let country = countryData[0]
+               
+                
+
+
+                console.log("Country Data:", country)
+                console.log("Capital:", country.capital);
+                
+            let createPopupDetails = ''
+                
+               let popup = document.getElementById('popup')
+                let millionVal = (country.population/100000).toFixed(2)
+
+            const currencies = country.currencies;
+            let languages = country.languages
+            
+           if (currencies) {
+                //Get the first currency (most countries have one primary currency)
+               const currencyName = Object.values(currencies)[0].name || 'N/A';
+                const currencySymbol = Object.values(currencies)[0].symbol || 'N/A';
+                
+                const langaugeName = Object.values(languages).toString().split(',').join(',')
+
+            
+                
+                 createPopupDetails = `<p class = "countryName">${country.name.common}</p>
+                
+                <div class= "popDetails">
+                <ul>
+               <li> <img src= ${country.flags.png} class = "popupImg"> </li>
+                <li>Capital: ${country.capital}</li>
+                <li>Population: ${millionVal}M</li>
+                <li>Region: ${country.region}</li>
+                <li>Languages: ${langaugeName}</li>
+                <li>Currency : ${currencyName} (${currencySymbol})</li>
+                </ul>
+                </div>
+                <button id="close" >&#10006</button>
+                `
+                
+                
+                popup.innerHTML = createPopupDetails
+
+            }
+            
+        }catch(error){
+            console.log('Error fetching country details:', error);
+            
+        }
+
+         
+////////////////
+
+        //////Close the popup
+                
+              
+       let closeBtn = document.getElementById('close')
+       let popup = document.getElementById('popup')
+       let opacity = document.getElementById('opacity')
+                
+            
+       closeBtn.addEventListener('click', () => {
+         
+         popup.style.display = "none"
+         opacity.style.display = 'none'
+      })
+    
+   
+    }
+
+
+        /////////////////
 
 ///Get input from the user and show the country data
         let getInput;
@@ -175,7 +197,6 @@ async function displayCountries() {
           const currencyName = Object.values(currencies)[0].name || 'N/A';
           const currencySymbol = Object.values(currencies)[0].symbol || 'N/A';
 
-
             createOneROw += ` <tr>
                 <td>1</td>
                 <td>${countryData.name.common}</td>
@@ -185,7 +206,7 @@ async function displayCountries() {
                 <td>${currencyName} (${currencySymbol})</td>
                 <td><img src= ${countryData.flags.png}></td>
                 <td><button id = "showBtn" class="js-showbtn"
-                }">Show Details</button></td>
+                onclick = "showDetails('${countryData.name.common}')">Show Details</button></td>
             </tr>`
         
             countriesTable.innerHTML = createOneROw
@@ -206,56 +227,7 @@ async function displayCountries() {
                     opacity.style.display = 'block'
                 })
             })
-   ////////////////////////////////////     
-
-           /*  let createPopupDetails = ''
-        
-       countryData.map((country) => {
-            
-            let millionVal = (country.population/100000).toFixed(2)
-
-                const currencies = country.currencies;
-                
-                if (currencies) {
-                    // Get the first currency (most countries have one primary currency)
-                    const currencyName = Object.values(currencies)[0].name || 'N/A';
-                    const currencySymbol = Object.values(currencies)[0].symbol || 'N/A';
-                    
-                   
-                    
-                    
-                    createPopupDetails = `<p class = "countryName">${country.name.common}</p>
-                    
-                    <div class= "popDetails">
-                    <img src= ${country.flags.png} class = "popupImg">
-                    <p>Capital: ${country.capital}</p>
-                    <p>Population: ${millionVal}M</p>
-                    <p>Region: ${country.region}</p>
-                    <p>Languages: ${country.languages}</p>
-                    <p>Currency : ${currencyName} (${currencySymbol})</p>
-                    </div>
-                    <button id="close" >&#10006</button>
-                    `
-                    
-                    
-                    popup.innerHTML = createPopupDetails
-
-                    
-                } })
-                 */
-                
-      //////Close Popup          
-              
-                let closeBtn = document.getElementById('close')
-                
-            
-                 closeBtn.addEventListener('click', () => {
-                   
-                   popup.style.display = "none"
-                   opacity.style.display = 'none'
-                })
-            
-            //////////////////////////
+   ////////////////////////////////////       
             
       }   })
                 
@@ -263,5 +235,5 @@ async function displayCountries() {
 
 
 
-
+/////////////////////////
             
