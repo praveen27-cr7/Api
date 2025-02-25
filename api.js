@@ -177,9 +177,15 @@ async function displayCountries() {
        
         // let searchBtn = document.querySelector('.search')
  
+ 
     getInput.addEventListener('keyup', () => {
         let countriesTable = document.getElementById('countries-table-body') 
         let countryName = getInput.value.toLowerCase()
+
+        if(countryName === ""){
+            countriesTable.innerHTML =  displayCountries()
+        }
+
         let finalUrl = `https://restcountries.com/v3.1/name/${countryName}?fullText=true`
         //  console.log(finalUrl)
          fetch(finalUrl).then((response) => response.json())
@@ -211,22 +217,8 @@ async function displayCountries() {
         
             countriesTable.innerHTML = createOneROw
 
-            let table = document.getElementById("countries-table-body");
-            let rows = table.getElementsByTagName("tr");
 
-            for (let i = 0; i < rows.length; i++) {
-                let td = rows[i].getElementsByTagName("td")[1]; // Index 1 is the country name
-                if (td) {
-                    let countryName = td.textContent || td.innerText;
-                    if (countryName.toLowerCase().startsWith(getInput)) {
-                        rows[i].style.display = "";
-                    } else {
-                        rows[i].style.display = "none";
-                    }
-                }
-            }
-
-
+        
     ///////////////////////////     
     
     
@@ -245,9 +237,10 @@ async function displayCountries() {
    ////////////////////////////////////       
             
       }   })
+      
                 
             })
-
+        
 
 
 /////////////////////////
