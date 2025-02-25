@@ -177,11 +177,11 @@ async function displayCountries() {
        
         // let searchBtn = document.querySelector('.search')
  
-    getInput.addEventListener('keypress', () => {
+    getInput.addEventListener('keyup', () => {
         let countriesTable = document.getElementById('countries-table-body') 
-        let countryName = getInput.value
+        let countryName = getInput.value.toLowerCase()
         let finalUrl = `https://restcountries.com/v3.1/name/${countryName}?fullText=true`
-         console.log(finalUrl)
+        //  console.log(finalUrl)
          fetch(finalUrl).then((response) => response.json())
          .then((data) => {
             
@@ -237,3 +237,20 @@ async function displayCountries() {
 
 /////////////////////////
             
+function filterTable() {
+    let getInput = document.getElementById('inputCountry').value.toLowerCase();
+    let table = document.getElementById("countries-table-body");
+    let rows = table.getElementsByTagName("tr");
+
+    for (let i = 0; i < rows.length; i++) {
+        let td = rows[i].getElementsByTagName("td")[1]; // Index 1 is the country name
+        if (td) {
+            let countryName = td.textContent || td.innerText;
+            if (countryName.toLowerCase().startsWith(getInput)) {
+                rows[i].style.display = "";
+            } else {
+                rows[i].style.display = "none";
+            }
+        }
+    }
+}
