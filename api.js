@@ -244,6 +244,8 @@ async function displayCountries() {
 
 
 /////////////////////////
+
+////typing input live update
             
 function filterTable() {
     let getInput = document.getElementById('inputCountry').value.toLowerCase();
@@ -262,3 +264,5 @@ function filterTable() {
         }
     }
 }
+
+//////
