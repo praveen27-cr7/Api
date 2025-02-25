@@ -211,6 +211,21 @@ async function displayCountries() {
         
             countriesTable.innerHTML = createOneROw
 
+            let table = document.getElementById("countries-table-body");
+            let rows = table.getElementsByTagName("tr");
+
+            for (let i = 0; i < rows.length; i++) {
+                let td = rows[i].getElementsByTagName("td")[1]; // Index 1 is the country name
+                if (td) {
+                    let countryName = td.textContent || td.innerText;
+                    if (countryName.toLowerCase().startsWith(getInput)) {
+                        rows[i].style.display = "";
+                    } else {
+                        rows[i].style.display = "none";
+                    }
+                }
+            }
+
 
     ///////////////////////////     
     
