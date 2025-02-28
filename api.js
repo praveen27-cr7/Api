@@ -1,268 +1,151 @@
-////First get data for fetch api and convert to json foramt and then return
 
+        let countriesData = [];
+        let filteredData = [];
+        let currentPage = 1;
+        const countriesPerPage = 5;
 
-async function getCountries() {
-    let response = await fetch("https://restcountries.com/v3.1/all")
-    let countriesData = await response.json()
-    return countriesData
-}
+        fetch('https://restcountries.com/v3.1/all')
+            .then((response) => response.json())
+            .then((data) => {
+                countriesData = data;
+                filteredData = data;
+                displayCountries()
+                updatePaginationInfo();
+            });
 
-/////////////
+            function displayCountries() {
+                let countriesTable = document.getElementById("countries-table-body");
+                countriesTable.innerHTML = "";
+                
+               
+                    let tableData = '';
+                    
+                    const start = (currentPage - 1) * countriesPerPage
+                    
+                    const end = start + countriesPerPage
+                    console.log(end)
+                    const paginatedData = filteredData.slice(start, end);
 
-   
-
-
-/////Display the countries data in UI
-
-async function displayCountries() {
-    let countries =  await getCountries()
-     console.log(countries);
-     
-
-    let countriesTable = document.getElementById('countries-table-body') 
-
-    
-    
-    let createRow = ''
-    
-    
-    countries.forEach((country,index) => {
-        let millionVal = (country.population/100000).toFixed(2)
-        const currencies = country.currencies;
-
-        if (currencies) {
-          // Get the first currency (most countries have one primary currency)
-          const currencyName = Object.values(currencies)[0].name || 'N/A';
-          const currencySymbol = Object.values(currencies)[0].symbol || 'N/A';
-
-          
         
-        createRow += ` <tr>
-                <td>${index+1}</td>
-                <td>${country.name.common}</td>
-                <td>${country.capital}</td>
-                <td>${country.region}</td>
-                <td>${millionVal}M</td>
-                <td>${currencyName} (${currencySymbol})</td>
-                <td><img src= ${country.flags.png}></td>
-                <td><button id = "showBtn" class="js-showbtn" 
-                  onclick = "showDetails('${country.name.common}')">Show Details</button></td>
-            </tr>`
-            countriesTable.innerHTML = createRow
+                    let num = start + 1;
+                    for (let i = 0; i < paginatedData.length; i++) {
+                        let values = paginatedData[i];
+                        let currencyInfo = '';
+                        let millionVal = (values.population/100000).toFixed(2)
+                        if (values.currencies) {
+                            for (const [code, details] of Object.entries(values.currencies)) {
+                                currencyInfo += `${details.name} (${details.symbol})`;
+                            }
+                        } else {
+                            currencyInfo = 'N/A';
+                        }
+        
+                        const countryName = values.name.common;
+                        const capital = values.capital ? values.capital[0] : 'N/A';
+                        
+                        const flagUrl = values.flags.png;
+        
+                        tableData += ` 
+                            <tr>
+                                <td id='number'>${num}</td>
+                                <td>${countryName}</td>
+                                <td>${capital}</td>
+                                 <td>${values.region}</td>
+                                 <td>${millionVal}M</td>
+                                <td>${currencyInfo}</td>
 
-
-
+                                <td><img src="${flagUrl}" alt="Flag of ${countryName}"></td>
+                                <td><button id = "showBtn" class="js-showbtn" onclick='showDetails("${values.name.common}")'>Show Details</button></td>
+                            </tr>`;
+                        num++;
+                    }
+                    countriesTable.innerHTML = tableData
+                }
             
-        }
-    });
-
-
-   //////////////
-    
-        
-/////Show Popup on UI
-
-            let btns = document.querySelectorAll('.js-showbtn')
-            let popup = document.getElementById('popup')
-            let opacity = document.getElementById('opacity')
-        
-        btns.forEach((btn) => {
-                btn.addEventListener('click', () => {
-                    popup.style.display = 'block'
-                    opacity.style.display = 'block'
-                })
-            })
-        
-//////////////
-
-
- }
-        
-           
-    
-      ///////////          
                 
             
-    /////Function calling        
-            
+
+function prevPage() {
+    if (currentPage > 1) {
+        currentPage--;
         displayCountries()
+        updatePaginationInfo();
+    }
+}
 
-        ////////////When click the show button you will see the country data in Popup
+function nextPage() {
+        if (currentPage < Math.ceil(filteredData.length /countriesPerPage )) {
+                currentPage++;
+                displayCountries()
+                updatePaginationInfo();
+            }
+        }
 
+        function updatePaginationInfo() {
+            const totalPages = Math.ceil(filteredData.length / countriesPerPage);
+            document.getElementById('page-info').textContent = `Page ${currentPage} of ${totalPages}`;
+        }
 
  async function showDetails(countryName) {
-            try{
-                let response =  await fetch(`https://restcountries.com/v3.1/name/${countryName}?fullText=true`)
-                let countryData = await response.json()
-
-                console.log("Full API Response:", countryData);
-
-                let country = countryData[0]
-               
-                
-
-
-                console.log("Country Data:", country)
-                console.log("Capital:", country.capital);
-                
-            let createPopupDetails = ''
-                
-               let popup = document.getElementById('popup')
-                let millionVal = (country.population/100000).toFixed(2)
-
-            const currencies = country.currencies;
-            let languages = country.languages
-            
-           if (currencies) {
-                //Get the first currency (most countries have one primary currency)
-               const currencyName = Object.values(currencies)[0].name || 'N/A';
-                const currencySymbol = Object.values(currencies)[0].symbol || 'N/A';
-                
-                const langaugeName = Object.values(languages).toString().split(',').join(',')
-
-            
-                
-                 createPopupDetails = `<p class = "countryName">${country.name.common}</p>
-                
-                <div class= "popDetails">
-                <ul>
-               <li> <img src= ${country.flags.png} class = "popupImg"> </li>
-                <li>Capital: ${country.capital}</li>
-                <li>Population: ${millionVal}M</li>
-                <li>Region: ${country.region}</li>
-                <li>Languages: ${langaugeName}</li>
-                <li>Currency : ${currencyName} (${currencySymbol})</li>
-                </ul>
-                </div>
-                <button id="close" >&#10006</button>
-                `
-                
-                
-                popup.innerHTML = createPopupDetails
-
+            try {
+                let response = await fetch(`https://restcountries.com/v3.1/name/${countryName}?fullText=true`);
+                let countryData = await response.json();
+                let country = countryData[0];
+        
+                let millionVal = (country.population / 1000000).toFixed(2);
+                let currencyName = "N/A";
+                let currencySymbol = "N/A";
+                let languages = country.languages ? Object.values(country.languages).join(", ") : "N/A";
+        
+                if (country.currencies) {
+                    let firstCurrency = Object.values(country.currencies)[0];
+                    currencyName = firstCurrency.name || "N/A";
+                    currencySymbol = firstCurrency.symbol || "N/A";
+                }
+        
+                let popup = document.getElementById("popup");
+                popup.innerHTML = `
+                    <p class="countryName">${country.name.common}</p>
+                    <div class="popDetails">
+                        <ul>
+                            <li><img src="${country.flags.png}" class="popupImg"></li>
+                            <li>Capital: ${country.capital || "N/A"}</li>
+                            <li>Population: ${millionVal}M</li>
+                            <li>Region: ${country.region}</li>
+                            <li>Languages: ${languages}</li>
+                            <li>Currency: ${currencyName} (${currencySymbol})</li>
+                        </ul>
+                    </div>
+                    <button id="close" onclick="closePopup()">&#10006</button>
+                `;
+                document.getElementById("popup").style.display = "block";
+                document.getElementById("opacity").style.display = "block";
+            } catch (error) {
+                console.error("Error fetching country details:", error);
             }
-            
-        }catch(error){
-            console.log('Error fetching country details:', error);
-            
         }
 
-         
-////////////////
-
-        //////Close the popup
-                
-              
-       let closeBtn = document.getElementById('close')
-       let popup = document.getElementById('popup')
-       let opacity = document.getElementById('opacity')
-                
-            
-       closeBtn.addEventListener('click', () => {
-         
-         popup.style.display = "none"
-         opacity.style.display = 'none'
-      })
-    
-   
-    }
-
-
-        /////////////////
-
-///Get input from the user and show the country data
-        let getInput;
-        getInput = document.getElementById('inputCountry')
+        function closePopup() {
+            document.getElementById("popup").style.display = "none";
+            document.getElementById("opacity").style.display = "none";
+        }
         
+
+        function filterTable() {
+            const input = document.getElementById('inputCountry');
+            const filter = input.value.toLowerCase();
+            
+            filteredData = countriesData.filter((item) => {
+                const countryName = item.name.common.toLowerCase();
+                return countryName.includes(filter);
+            });
+
+
+
+            console.log(filteredData)
+            currentPage = 1; 
+            displayCountries();
+            updatePaginationInfo();
+        }
+
        
-        // let searchBtn = document.querySelector('.search')
- 
- 
-    getInput.addEventListener('keyup', () => {
-        let countriesTable = document.getElementById('countries-table-body') 
-        let countryName = getInput.value.toLowerCase()
-
-        if(countryName === ""){
-            countriesTable.innerHTML =  displayCountries()
-        }
-
-        let finalUrl = `https://restcountries.com/v3.1/name/${countryName}?fullText=true`
-        //  console.log(finalUrl)
-         fetch(finalUrl).then((response) => response.json())
-         .then((data) => {
-            
-            let countryData  = data[0]
-            // console.log(countryData);
-
-            let createOneROw = ''
-            const currencies = countryData.currencies;
-            let millionVal = (countryData.population/100000).toFixed(2)
-
-         if (currencies) {
-          // Get the first currency (most countries have one primary currency)
-          const currencyName = Object.values(currencies)[0].name || 'N/A';
-          const currencySymbol = Object.values(currencies)[0].symbol || 'N/A';
-
-            createOneROw += ` <tr>
-                <td>1</td>
-                <td>${countryData.name.common}</td>
-                <td>${countryData.capital}</td>
-                <td>${countryData.region}</td>
-               <td>${millionVal}M</td>
-                <td>${currencyName} (${currencySymbol})</td>
-                <td><img src= ${countryData.flags.png}></td>
-                <td><button id = "showBtn" class="js-showbtn"
-                onclick = "showDetails('${countryData.name.common}')">Show Details</button></td>
-            </tr>`
-        
-            countriesTable.innerHTML = createOneROw
-
-
-        
-    ///////////////////////////     
-    
-    
-
-  ////////////Show Popup 
-            let btns = document.querySelectorAll('.js-showbtn')
-            let popup = document.getElementById('popup')
-            let opacity = document.getElementById('opacity')
-     
-        btns.forEach((btn) => {
-                btn.addEventListener('click', () => {
-                    popup.style.display = 'block'
-                    opacity.style.display = 'block'
-                })
-            })
-   ////////////////////////////////////       
-            
-      }   })
-      
-                
-            })
-        
-
-
-/////////////////////////
-
-////typing input live update
-            
-function filterTable() {
-    let getInput = document.getElementById('inputCountry').value.toLowerCase();
-    let table = document.getElementById("countries-table-body");
-    let rows = table.getElementsByTagName("tr");
-
-    for (let i = 0; i < rows.length; i++) {
-        let td = rows[i].getElementsByTagName("td")[1]; // Index 1 is the country name
-        if (td) {
-            let countryName = td.textContent || td.innerText;
-            if (countryName.toLowerCase().startsWith(getInput)) {
-                rows[i].style.display = "";
-            } else {
-                rows[i].style.display = "none";
-            }
-        }
-    }
-}
-
-//////
